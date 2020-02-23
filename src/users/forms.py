@@ -8,11 +8,14 @@ class UserForm(forms.ModelForm):
         fields=[
             'firstname',
             'lastname',
+            'email',
+            'password',
             'group'
         ]
 
 class RawUserForm(forms.Form):
     firstname=forms.CharField()
     lastname=forms.CharField()
-    #email=forms.EmailField()
+    email=forms.EmailField()
+    password=forms.CharField()
     group=forms.DecimalField()

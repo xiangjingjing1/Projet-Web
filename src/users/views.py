@@ -10,17 +10,15 @@ def home_view(request,*args,**kwargs):
 
 
 def user_creat_view(request):
-    user_form=RawUserForm(request.GET)
-    if request.method=="POST":
-        user_form=RawUserForm(request.POST)
-        #Check all the data form
-        if user_form.is_valid():
-            print(user_form.cleaned_data)
-            Product.objetcts.create(**user_form.cleaned_data)
-        else:
-            print(user_form.errors)
-
+    form=UserForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        form=UserForm()
     context={
-        "form":user_form
+    'form':form
     }
     return render(request,"register.html",context)
+
+def user_login_view(request):
+    pass
+    return render(request,"login.html")
