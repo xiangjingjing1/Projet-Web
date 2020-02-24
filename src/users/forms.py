@@ -10,12 +10,14 @@ class UserForm(forms.ModelForm):
             'lastname',
             'email',
             'password',
+            'checkpassword',
             'group'
         ]
 
-class RawUserForm(forms.Form):
-    firstname=forms.CharField()
-    lastname=forms.CharField()
-    email=forms.EmailField()
-    password=forms.CharField()
-    group=forms.DecimalField()
+class RegisterForm(forms.Form):
+    firstname=forms.CharField(label="firstname",max_length=128,widget=forms.TextInput(attrs={'class':'form-control'}))
+    lastname=forms.CharField(label="lastname",max_length=128,widget=forms.TextInput(attrs={'class':'form-control'}))
+    email=forms.EmailField(label="email",widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    password=forms.CharField(label="password",widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    checkpassword=forms.CharField(label="checkpassword",widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    group=forms.DecimalField(label="group",widget=forms.NumberInput(attrs={'class':'form-control'}))
