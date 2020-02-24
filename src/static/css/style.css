@@ -15,17 +15,7 @@ header{
   width:500px;
   display: block;
 }
-#signup_form{
-    padding-left: 50%;
-    position: relative;
-    z-index: 3;
-    vertical-align: middle;
-    display: inline-block;
-    line-height: normal;
-    width:500px;
-    body {
-  background-color: #eee;
-}
+
 .form-login {
   max-width: 330px;
   padding: 15px;
@@ -53,4 +43,9 @@ header{
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+@media (min-width: 992px){
+  #formdiv{
+    width: 70% ;
+  }
 }

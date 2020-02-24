@@ -2,13 +2,17 @@ from django.shortcuts import render,redirect
 from .models import User
 from .forms import UserForm,RegisterForm
 from django.http import HttpResponse
-
+import hashlib
 # Create your views here.
 def home_view(request,*args,**kwargs):
     #print(request.user)
     return render(request,"base.html",{}) #string of HTML code {} dictionnary
 
-
+def hash_code(s,salt='teamwork'):
+    h=hashlib.sha256()
+    s+=salt
+    h.update(s.encode())
+    return h.hexdigest()
 def user_creat_view(request):
     if request.method=="POST":
         form_regiseter=RegisterForm(request.POST or None)
@@ -32,7 +36,7 @@ def user_creat_view(request):
                 #If all the data has being check
                 new_user=User.objects.create(firstname=firstname
                 ,lastname=lastname
-                ,password=password
+                ,password=hash_code(password)
                 ,email=email
                 ,group=group)
                 new_user.save()
@@ -59,7 +63,7 @@ def user_login_view(request):
             useremail=useremail.strip()
             try:
                 user=User.objects.get(email=useremail)
-                if user.password==password:
+                if user.password==hash_code(password):
                     return redirect('/index/')
                 else:
                     message="Wrong password"
