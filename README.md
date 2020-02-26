@@ -7,6 +7,7 @@ source bin/activate
 For start the server 
 
 cd src/
+
 python manage.py runserver
 
 
