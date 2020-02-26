@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import User
+from .models import User,Group,Task,Projet,Processing
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -10,8 +10,40 @@ class UserForm(forms.ModelForm):
             'lastname',
             'email',
             'password',
-            'checkpassword',
-            'group'
+            'checkpassword'
+        ]
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model=Group
+        fields=[
+            'namegrp'
+        ]
+
+class ProjetForm(forms.ModelForm):
+    class Meta:
+        fields=[
+            'nameprj',
+            'introduction',
+            'workgroup',
+            'starttime',
+            'endtime'
+        ]
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        fields=[
+            'nametsk',
+            'description',
+            'startingdate',
+            'endingdate'
+        ]
+
+class ProcessingForm(forms.ModelForm):
+    class Meta:
+        fields=[
+            'done',
+            'summery'
         ]
 
 class RegisterForm(forms.Form):
@@ -20,4 +52,3 @@ class RegisterForm(forms.Form):
     email=forms.EmailField(label="email",widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password=forms.CharField(label="password",widget=forms.PasswordInput(attrs={'class':'form-control'}))
     checkpassword=forms.CharField(label="checkpassword",widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    group=forms.DecimalField(label="group",widget=forms.NumberInput(attrs={'class':'form-control'}))
