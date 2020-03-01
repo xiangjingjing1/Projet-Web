@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Profile(models.Model):
@@ -17,3 +18,18 @@ class Group(models.Model):
 class UserGroup(models.Model):
     id_group=models.ForeignKey(Group,on_delete=models.CASCADE)
     id_user=models.ForeignKey(Profile,on_delete=models.CASCADE)
+
+class Projet(models.Model):
+    group_projet=models.ForeignKey(Group,on_delete=models.CASCADE)
+    starting_date=models.DateTimeField(default=timezone.now)
+    ending_date=models.DateTimeField(default=timezone.now)
+    name_projet=models.CharField(max_length=128)
+    description=models.TextField(max_length=500)
+
+class Task(models.Model):
+    id_projet=models.ForeignKey(Projet,on_delete=models.CASCADE)
+    id_employee=models.ForeignKey(Profile,on_delete=models.CASCADE)
+    name_task=models.CharField(max_length=128)
+    discription_task=models.TextField(max_length=500)
+    task_start_date=models.DateTimeField(default=timezone.now)
+    task_end_date=models.DateTimeField(default=timezone.now)

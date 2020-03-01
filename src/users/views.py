@@ -1,9 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm,GroupCreationForm
 from .models import Profile,User,Group,UserGroup
 from django.contrib.auth import authenticate,login
+
+#### Home page views ####
+def home_view(request):
+    return render(request,'home.html')
 
 #### Register page ####
 def user_creat_view(request):
@@ -75,7 +79,19 @@ def group_creat_view(request):
         form=GroupCreationForm()
     return render(request,'group-create.html',locals())
 
+def group_list_view(request):
+    group=Group.objects.all()
+    context={
+        "object":group
+    }
+    return render(request,'group_list.html',context)
+
 #### Group page ####
 @login_required
-def group_view(request):
-    return render(request,'group.html')
+def group_view(request,id):
+    #group=Group.objects.all().values('nameGroup')
+    obj=get_object_or_404(Group,id=id)
+    context={
+        "object":obj
+    }
+    return render(request,'group.html',context)

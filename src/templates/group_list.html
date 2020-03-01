@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Here is the list of available group </h1>
+  {% for grp in object %}
+    <h2>{{ grp.nameGroup }}</h2>
+    <a href="{% url 'group' grp.id  %}">Add member</a>
+  {% endfor %}
+{% endblock content %}
