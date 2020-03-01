@@ -1,11 +1,21 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
-{% if request.session.is_login %}
-    <h1>Welcome back {{ request.session.username }}</h1>
-    <li><a href="/logout/">Log out</a></li>
-{% else %}
-    <li><a href="/login/">Log in</a></li>
-    <li><a href="/register/">Sign up</a></li>
-{% endif %}
-{% endblock %}
+    <div class="content-section">
+      <div class="media">
+          <h2 class="account-heading">{{ user.username }}</h2>
+          <p class="text-secondary">{{ user.email }}</p>
+      </div>
+      <form class="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4"> Profile information </legend>
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+          <button type="btn btn-outline-info" name="button" type="submit">Update</button>
+        </div>
+      </form>
+    </div>
+{% endblock content %}

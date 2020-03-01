@@ -1,93 +1,81 @@
-from django.shortcuts import render,redirect
-from .models import User,Group,Projet,Task,Processing,Worker
-from .forms import UserForm,RegisterForm
-from django.http import HttpResponse
-import hashlib
+from django.shortcuts import render, redirect
+from django.contrib import messages,auth
+from django.contrib.auth.decorators import login_required
+from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm,GroupCreationForm
+from .models import Profile,User,Group,UserGroup
+from django.contrib.auth import authenticate,login
 
-# Create your views here.
-def home_view(request,*args,**kwargs):
-    #print(request.user)
-    return render(request,"base.html",{}) #string of HTML code {} dictionnary
-
-def hash_code(s,salt='teamwork'):
-    h=hashlib.sha256()
-    s+=salt
-    h.update(s.encode())
-    return h.hexdigest()
+#### Register page ####
 def user_creat_view(request):
-    if request.method=="POST":
-        form_regiseter=RegisterForm(request.POST or None)
-        message="Please check the information that you enter"
-        if form_regiseter.is_valid():
-            firstname=form_regiseter.cleaned_data['firstname']
-            lastname=form_regiseter.cleaned_data['lastname']
-            email=form_regiseter.cleaned_data['email']
-            password=form_regiseter.cleaned_data['password']
-            checkpassword=form_regiseter.cleaned_data['checkpassword']
-            if password != checkpassword:
-                message="The password doesn't match"
-                return render(request,'register.html',locals())
-            else:
-                same_email_user=User.objects.filter(email=email)
-                if same_email_user:
-                    message="This email has already exist!"
-                    return render(request,'register.html',locals())
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Your account has been created! You are now able to log in')
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'register.html', {'form': form})
 
-                #If all the data has being check
-                new_user=User.objects.create(firstname=firstname
-                ,lastname=lastname
-                ,password=hash_code(password)
-                ,email=email)
-                new_user.save()
-                return redirect('/login/')
-
-    form_regiseter=RegisterForm()
-    return render(request,'register.html',locals())
-    #form=UserForm(request.POST or None)
-    #if form.is_valid():
-    #    form.save()
-    #    form=UserForm()
-    #context={
-    #'form':form
-    #}
-    #return render(request,"register.html",context)
-
-def user_login_view(request):
-    if request.session.get('is_login',None):
-        return redirect('/index')
-    if request.method=="POST":
-        useremail=request.POST.get('useremail',None)
-        password=request.POST.get('password',None)
-        message="All fields must be completed"
-        #The username and password can't be Null
-        if useremail and password:
-            useremail=useremail.strip()
-            try:
-                user=User.objects.get(email=useremail)
-                if user.password==hash_code(password):
-                    request.session['is_login']=True
-                    request.session['user_email']=user.email
-                    request.session['username']=user.firstname
-                    if user.admin==True:
-                        return redirect('/administration/')
-                    else:
-                        return redirect('/index/')
-                else:
-                    message="Wrong password"
-            except:
-                message="The user does not exist"
-        return render(request,"login.html",{"message":message})
-    return render(request,'login.html')
-
-def user_logout_view(request):
-    if not request.session.get('is_login',None):
-        return render(request,'logout.html')
-    request.session.flush()
-    return render(request,'logout.html')
-
+#### Admin login page ###
 def user_admin_view(request):
-    return render(request,'administration.html')
+    if request.method=='POST':
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        user=authenticate(username=username,password=password)
+        profile=Profile.objects.get(user=user)
+        if user is not None and profile.isadmin==True:
+            login(request,user)
+            return redirect('/adminpanel/')
+    context={}
+    return render(request,'administration.html',context)
 
-def user_index_view(request):
-    pass
-    return render(request,'index.html')
+#### Admin homepage ####
+def user_admin_panel(request):
+    return render(request,'adminpanel.html')
+
+#### User homepage ####
+@login_required
+def user_profile_view(request):
+    if request.method=='POST':
+        u_form=UserUpdateForm(request.POST, instance=request.user)
+        p_form=ProfileUpdateForm(request.POST, instance=request.user.profile)
+
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your account has been created! Your account has been updated!')
+            return redirect('profile')
+    else:
+        u_form=UserUpdateForm(instance=request.user)
+        p_form=ProfileUpdateForm(instance=request.user.profile)
+
+    context={
+        'u_form':u_form,
+        'p_form':p_form
+    }
+    return render(request, 'index.html',context)
+
+#### Creat group page ####
+@login_required
+def group_creat_view(request):
+    if request.method=="POST":
+        form=GroupCreationForm(request.POST)
+        if form.is_valid():
+            user1=Profile.objects.get(id=request.user.id)
+            group=Group(nameGroup=form.cleaned_data.get('nameGroup'),idProfile_id=user1.id)
+            group.save()
+            user_group=UserGroup(id_group_id=group.id,id_user_id=user1.id)
+            user_group.save()
+            return redirect('/group/')
+
+    else:
+        profile=Profile.objects.get(user=request.user.id)
+        form=GroupCreationForm()
+    return render(request,'group-create.html',locals())
+
+#### Group page ####
+@login_required
+def group_view(request):
+    return render(request,'group.html')
