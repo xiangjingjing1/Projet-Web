@@ -26,7 +26,9 @@ from users.views import (
     user_admin_panel,
     group_creat_view,
     group_view,
-    group_member_view
+    group_member_view,
+    projet_creat_view,
+    task_creat_view
 )
 
 urlpatterns = [
@@ -34,6 +36,7 @@ urlpatterns = [
     path('',home_view,name="home"),
     path('register/',user_creat_view,name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('profile/',user_profile_view,name='profile'),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('administration/',user_admin_view),
@@ -41,5 +44,7 @@ urlpatterns = [
     path('group/creat/',group_creat_view),
     path('group/',group_list_view,name='group_list'),
     path('group/<int:id>/',group_view,name='group'),
-    path('group/<int:id>/member/',group_member_view,name='group_member')
+    path('group/member/<int:id>/',group_member_view,name='group_member'),
+    path('group/projet/create/<int:id>/',projet_creat_view,name='projet_creat'),
+    path('group/projet/task/create/<int:id>/',task_creat_view,name='task_creat')
 ]

@@ -4,5 +4,7 @@
   {% for grp in object %}
     <h2>{{ grp.nameGroup }}</h2>
     <a href="{% url 'group' grp.id  %}">Add member</a>
+    <a href="{% url 'projet_creat' grp.id %}">Creat a projet</a>
+    <a href="{% url 'group_member' grp.id %}">The list of member </a>
   {% endfor %}
 {% endblock content %}

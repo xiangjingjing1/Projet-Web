@@ -1,8 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages,auth
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm,GroupCreationForm,GroupAddUserForm
-from .models import Profile,User,Group,UserGroup
+from .forms import (
+    UserRegisterForm,
+    UserUpdateForm,
+    ProfileUpdateForm,
+    GroupCreationForm,
+    GroupAddUserForm,
+    ProjetCreationForm,
+    TaskCreationForm
+)
+from .models import Profile,User,Group,UserGroup,Projet,Task
 from django.contrib.auth import authenticate,login
 
 #### Home page views ####
@@ -20,7 +29,7 @@ def user_creat_view(request):
             return redirect('login')
     else:
         form = UserRegisterForm()
-        
+
     return render(request, 'register.html', {'form': form})
 
 #### Admin login page ###
@@ -119,7 +128,7 @@ def group_view(request,id):
 
     return render(request,'group.html',locals())
 
-#### Member list of a group view
+####  Member list of a group view  ####
 def group_member_view(request,id):
     profilelist=[]
     name_group=Group.objects.get(id=id)
@@ -129,3 +138,46 @@ def group_member_view(request,id):
         profilelist.append(profil.firstname)
 
     return render(request,'group_member.html',locals())
+
+####  Creat projet view ####
+def projet_creat_view(request,id):
+    if request.method=="POST":
+        form=ProjetCreationForm(request.POST)
+        if form.is_valid():
+            stardate=form.cleaned_data.get('starting_date')
+            enddate=form.cleaned_data.get('ending_date')
+            dscp=form.cleaned_data.get('description')
+            namep=form.cleaned_data.get('name_projet')
+            projet=Projet(group_projet_id=id,starting_date=stardate,ending_date=enddate,name_projet=namep)
+            projet.save()
+            messages.success(request,f'Projet created !')
+            return redirect('/group/')
+        else:
+            messages.error(request,"Please fill all the information ")
+    else:
+        form=ProjetCreationForm()
+
+    return render(request,'projet_creat.html',locals())
+
+#### Creat a task for a projet ####
+def task_creat_view(request,id):
+    if request.method=="POST":
+        form=TaskCreationForm(request.POST)
+        if form.is_valid():
+            stardate=form.cleaned_data.get('task_starting_date')
+            enddate=form.cleaned_data.get('task_ending_date')
+            dscp=form.cleaned_data.get('description_task')
+            nametask=form.cleaned_data.get('name_task')
+            nameuser=form.cleaned_data.get('name_user')
+            user_profil=User.objects.get(username=nameuser)
+            id_profil=Profile.objects.get(user_id=user_profil.id)
+            task=Task(name_task=nametask,discription_task=dscp,task_start_date=stardate,task_end_date=enddate,id_employee_id=id_profil.id,id_group_id=id)
+            task.save()
+            messages.success(request,f'Task created !')
+            return redirect('/group/')
+        else:
+            messages.error(request,"Please fill all the information ")
+    else:
+        form=TaskCreationForm()
+
+    return render(request,'task_creat.html',locals())

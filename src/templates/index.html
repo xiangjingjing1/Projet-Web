@@ -3,8 +3,9 @@
 {% block content %}
     <div class="content-section">
       <div class="media">
-          <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">{{ user.email }}</p>
+          <h2 class="account-heading">Username : {{ user.username }}</h2>
+          <p class="text-secondary">Email: {{ user.email }}</p>
+          <a href="{% url 'logout' %}">Log out </a>
       </div>
       <form class="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
