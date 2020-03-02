@@ -1,5 +1,13 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
-  <h1>Here is the list of available group </h1>
-  <h4> {{ object.id }} - {{ object.nameGroup }}</h4>
+  <h1>Add new member to your group </h1>
+  <form method="post">
+  {{ formset.non_form_errors }}
+  {% csrf_token %}
+  {{ form|crispy }}
+  <div id="button_connexion">
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+  </form>
 {% endblock content %}

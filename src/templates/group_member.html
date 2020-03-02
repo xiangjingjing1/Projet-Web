@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>The liste member of your group</h1>
+  {% for profil in profilelist %}
+    <h2>{{ profil }}</h2>
+  {% endfor %}
+{% endblock content %}

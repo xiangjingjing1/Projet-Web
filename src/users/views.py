@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages,auth
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm,GroupCreationForm
+from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm,GroupCreationForm,GroupAddUserForm
 from .models import Profile,User,Group,UserGroup
 from django.contrib.auth import authenticate,login
 
@@ -20,6 +20,7 @@ def user_creat_view(request):
             return redirect('login')
     else:
         form = UserRegisterForm()
+        
     return render(request, 'register.html', {'form': form})
 
 #### Admin login page ###
@@ -33,6 +34,7 @@ def user_admin_view(request):
             login(request,user)
             return redirect('/adminpanel/')
     context={}
+
     return render(request,'administration.html',context)
 
 #### Admin homepage ####
@@ -49,7 +51,7 @@ def user_profile_view(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, f'Your account has been created! Your account has been updated!')
+            messages.success(request, f'Your account has been updated!')
             return redirect('profile')
     else:
         u_form=UserUpdateForm(instance=request.user)
@@ -59,6 +61,7 @@ def user_profile_view(request):
         'u_form':u_form,
         'p_form':p_form
     }
+
     return render(request, 'index.html',context)
 
 #### Creat group page ####
@@ -77,21 +80,52 @@ def group_creat_view(request):
     else:
         profile=Profile.objects.get(user=request.user.id)
         form=GroupCreationForm()
+
     return render(request,'group-create.html',locals())
 
+#### Available group list
+@login_required
 def group_list_view(request):
     group=Group.objects.all()
     context={
         "object":group
     }
+
     return render(request,'group_list.html',context)
 
-#### Group page ####
+#### Group page for adding new member ####
 @login_required
 def group_view(request,id):
-    #group=Group.objects.all().values('nameGroup')
     obj=get_object_or_404(Group,id=id)
     context={
         "object":obj
     }
-    return render(request,'group.html',context)
+    if request.method=="POST":
+        form=GroupAddUserForm(request.POST)
+        if form.is_valid():
+            username=form.cleaned_data.get('nameUser')
+            user=User.objects.get(username=username)
+            profil=Profile.objects.get(user_id=user.id)
+            if user is not None:
+                usergroup=UserGroup(id_group_id=id,id_user_id=profil.id)
+                usergroup.save()
+                messages.success(request, f'New member has been add')
+                return redirect('/group/')
+            else:
+                messages.error(request,"User doesn't exist ")
+    #group=Group.objects.all().values('nameGroup')
+    else:
+        form=GroupAddUserForm()
+
+    return render(request,'group.html',locals())
+
+#### Member list of a group view
+def group_member_view(request,id):
+    profilelist=[]
+    name_group=Group.objects.get(id=id)
+    memberlist=UserGroup.objects.filter(id_group_id=name_group.id)
+    for member in memberlist:
+        profil=Profile.objects.get(id=member.id_user_id)
+        profilelist.append(profil.firstname)
+
+    return render(request,'group_member.html',locals())

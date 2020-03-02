@@ -17,7 +17,18 @@ from django.contrib import admin
 from django.urls import path,include
 from django.contrib.auth import views as auth_views
 from django.conf.urls import url
-from users.views import home_view,group_list_view,user_creat_view,user_profile_view,user_admin_view,user_admin_panel,group_creat_view,group_view
+from users.views import (
+    home_view,
+    group_list_view,
+    user_creat_view,
+    user_profile_view,
+    user_admin_view,
+    user_admin_panel,
+    group_creat_view,
+    group_view,
+    group_member_view
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',home_view,name="home"),
@@ -30,4 +41,5 @@ urlpatterns = [
     path('group/creat/',group_creat_view),
     path('group/',group_list_view,name='group_list'),
     path('group/<int:id>/',group_view,name='group'),
+    path('group/<int:id>/member/',group_member_view,name='group_member')
 ]
