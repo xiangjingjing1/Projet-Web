@@ -28,7 +28,11 @@ from users.views import (
     group_view,
     group_member_view,
     projet_creat_view,
-    task_creat_view
+    task_creat_view,
+    task_list_view,
+    user_group_view,
+    user_list_task,
+    user_processing_view
 )
 
 urlpatterns = [
@@ -46,5 +50,9 @@ urlpatterns = [
     path('group/<int:id>/',group_view,name='group'),
     path('group/member/<int:id>/',group_member_view,name='group_member'),
     path('group/projet/create/<int:id>/',projet_creat_view,name='projet_creat'),
-    path('group/projet/task/create/<int:id>/',task_creat_view,name='task_creat')
+    path('group/projet/task/create/<int:id>/',task_creat_view,name='task_creat'),
+    path('group/projet/task/<int:id>/',task_list_view,name='task_list'),
+    path('profile/group/',user_group_view,name='user_group'),
+    path('profile/group/task/processing/<int:idT>/',user_processing_view,name='processing'),
+    path('profile/group/task/<int:idP>/',user_list_task,name='user_list_task')
 ]

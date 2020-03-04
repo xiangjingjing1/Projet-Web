@@ -9,14 +9,16 @@ from .forms import (
     GroupCreationForm,
     GroupAddUserForm,
     ProjetCreationForm,
-    TaskCreationForm
+    TaskCreationForm,
+    TaskProcessingForm
 )
-from .models import Profile,User,Group,UserGroup,Projet,Task
+from .models import Profile,User,Group,UserGroup,Projet,Task,Processing
 from django.contrib.auth import authenticate,login
 
 #### Home page views ####
 def home_view(request):
     return render(request,'home.html')
+
 
 #### Register page ####
 def user_creat_view(request):
@@ -32,6 +34,7 @@ def user_creat_view(request):
 
     return render(request, 'register.html', {'form': form})
 
+
 #### Admin login page ###
 def user_admin_view(request):
     if request.method=='POST':
@@ -46,9 +49,11 @@ def user_admin_view(request):
 
     return render(request,'administration.html',context)
 
+
 #### Admin homepage ####
 def user_admin_panel(request):
     return render(request,'adminpanel.html')
+
 
 #### User homepage ####
 @login_required
@@ -73,6 +78,7 @@ def user_profile_view(request):
 
     return render(request, 'index.html',context)
 
+
 #### Creat group page ####
 @login_required
 def group_creat_view(request):
@@ -92,6 +98,7 @@ def group_creat_view(request):
 
     return render(request,'group-create.html',locals())
 
+
 #### Available group list
 @login_required
 def group_list_view(request):
@@ -101,6 +108,7 @@ def group_list_view(request):
     }
 
     return render(request,'group_list.html',context)
+
 
 #### Group page for adding new member ####
 @login_required
@@ -128,6 +136,7 @@ def group_view(request,id):
 
     return render(request,'group.html',locals())
 
+
 ####  Member list of a group view  ####
 def group_member_view(request,id):
     profilelist=[]
@@ -138,6 +147,7 @@ def group_member_view(request,id):
         profilelist.append(profil.firstname)
 
     return render(request,'group_member.html',locals())
+
 
 ####  Creat projet view ####
 def projet_creat_view(request,id):
@@ -158,6 +168,7 @@ def projet_creat_view(request,id):
         form=ProjetCreationForm()
 
     return render(request,'projet_creat.html',locals())
+
 
 #### Creat a task for a projet ####
 def task_creat_view(request,id):
@@ -181,3 +192,64 @@ def task_creat_view(request,id):
         form=TaskCreationForm()
 
     return render(request,'task_creat.html',locals())
+
+
+#### Visualise task view ####
+def task_list_view(request,id):
+    tasklist=[]
+    task_group=Task.objects.filter(id_group=id)
+    for tsk in task_group:
+        task=Task.objects.get(id_group=id)
+        tasklist.append(task.name_task)
+
+    return render(request,'task_list.html',locals())
+
+
+#### User visualise group view ####
+@login_required
+def user_group_view(request):
+    grouplist=[]
+    current_user=request.user
+    user_profile=Profile.objects.get(user_id=current_user.id)
+    user_group=UserGroup.objects.filter(id_user_id=user_profile.id)
+    for grp in user_group:
+        group=Group.objects.get(id=grp.id_group_id)
+        grouplist.append(group)
+
+    return render(request,'user_group.html',locals())
+
+
+#### User list of task per group ####
+def user_list_task(request,idP):
+    task_list=[]
+    current_user=request.user
+    user_profile=Profile.objects.get(user_id=current_user.id)
+    user_task=Task.objects.filter(id_employee_id=user_profile.id)
+    for tsk in user_task:
+        if(tsk.id_group_id==idP):
+            task_list.append(tsk)
+
+    return render(request,'user_task.html',locals())
+
+
+
+#### User update task view ####
+@login_required
+def user_processing_view(request,idT):
+    if request.method=="POST":
+        form=TaskProcessingForm(request.POST)
+        if form.is_valid():
+            current_user=request.user
+            user_profile=Profile.objects.get(user_id=current_user.id)
+            finished=form.cleaned_data.get('is_finished')
+            summary=form.cleaned_data.get('summary')
+            processing=Processing(is_finished=finished,summary=summary,id_user_id=user_profile.id,id_user_task_id=idT)
+            processing.save()
+            messages.success(request,f'Information saved !')
+            return redirect('/profile/group/')
+        else:
+            messages.error(request,"Please fill all the information ")
+    else:
+        form=TaskProcessingForm(request.POST)
+
+    return render(request,'user_processing.html',locals())

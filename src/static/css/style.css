@@ -2,8 +2,11 @@
   max-width: 200px;
 }
 
-body{
-  background: #f2f4f5;
+#background-body{
+  background-position: center 0;
+  min-height: 100vh;
+  background-size: cover;
+  background-image: url('https://image.freepik.com/free-vector/business-people-teamwork-colleague-character-animation-scene-people-seminar-community_40876-1145.jpg');
 }
 
 header{

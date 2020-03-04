@@ -2,7 +2,7 @@ from django import forms
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile,Group,UserGroup,Projet,Task
+from .models import Profile,Group,UserGroup,Projet,Task,Processing
 
 #from .models import User,Group,Task,Projet,Processing
 
@@ -62,3 +62,11 @@ class TaskCreationForm(forms.ModelForm):
     class Meta:
         model=Task
         fields=['name_task','description_task','task_starting_date','task_ending_date','name_user']
+
+#### Create update Processing form for a task ####
+class TaskProcessingForm(forms.ModelForm):
+    is_finished=forms.BooleanField(label="Task finished")
+    summary=forms.CharField(label="Summary for the task")
+    class Meta:
+        model=Processing
+        fields=['is_finished','summary']

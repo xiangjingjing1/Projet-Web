@@ -24,12 +24,18 @@ class Projet(models.Model):
     starting_date=models.DateField(default=timezone.now)
     ending_date=models.DateField(default=timezone.now)
     name_projet=models.CharField(max_length=128)
-    description=models.TextField(max_length=500)
+    description=models.TextField(blank=True,null=True)
 
 class Task(models.Model):
     id_group=models.ForeignKey(Group,on_delete=models.CASCADE)
     id_employee=models.ForeignKey(Profile,on_delete=models.CASCADE)
     name_task=models.CharField(max_length=128)
-    discription_task=models.TextField(max_length=500)
+    discription_task=models.TextField(blank=True,null=True)
     task_start_date=models.DateField(default=timezone.now)
     task_end_date=models.DateField(default=timezone.now)
+
+class Processing(models.Model):
+    id_user_task=models.ForeignKey(Task,on_delete=models.CASCADE)
+    id_user=models.ForeignKey(Profile,on_delete=models.CASCADE)
+    is_finished=models.BooleanField(default=False)
+    summary=models.TextField(blank=True,null=True)
