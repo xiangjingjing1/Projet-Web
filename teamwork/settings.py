@@ -129,3 +129,6 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL='profile'
 LOGIN_URL='login'
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES = {'default': dj_database_url.config()}
