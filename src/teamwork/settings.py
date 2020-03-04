@@ -120,13 +120,11 @@ USE_TZ = True
 CRISPY_TEMPLATE_PACK='bootstrap4'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-PROJECT_DIR = os.path.join(PROJECT_ROOT,'../teamwork')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "teamwork/static"),
+    '/static/',
+]
 STATIC_URL = '/static/'
 STATIC_ROOT=os.path.join(BASE_DIR,'staticfiles/')
 LOGIN_REDIRECT_URL='profile'
-STATICFILES_DIRS = [
-    os.path.join(PROJECT_DIR, "static/"),
-    '/static/',
-]
 LOGIN_URL='login'
