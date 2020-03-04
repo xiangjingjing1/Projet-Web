@@ -1,2 +1,1 @@
-
-web: gunicorn teamwork.wsgi --log-file -
+web: gunicorn teamwork.wsgi --log-file
