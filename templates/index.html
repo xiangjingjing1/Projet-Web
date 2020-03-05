@@ -4,9 +4,11 @@
     <div class="content-section">
       <div class="media">
         <legend class="border-bottom mb-4"> Profile information </legend>
+        <div class="container">
           <h2 class="account-heading">Username : {{ user.username }}</h2>
           <p class="text-secondary">Email: {{ user.email }}</p>
           <a href="{% url 'logout' %}">Log out </a>
+        </div>
       </div>
       <form class="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
