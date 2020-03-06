@@ -253,3 +253,21 @@ def user_processing_view(request,idT):
         form=TaskProcessingForm(request.POST)
 
     return render(request,'user_processing.html',locals())
+
+
+#### Group Delete view ####
+def group_delete_view(request,idG):
+    d_group=Group.objects.get(id=idG)
+    if request.method == "POST":
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            d_group.delete()
+            return redirect('/group/')
+    context = {
+        "object": d_group
+    }
+    return render(request, "group_delete.html", context)
+
+#### Member_processing_view ####
+#def user_processing_view(request):

@@ -126,6 +126,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+SECURE_SSL_REDIRECT=True
+
 LOGIN_REDIRECT_URL='profile'
 LOGIN_URL='login'
 if 'DATABASE_URL' in os.environ:

@@ -32,7 +32,8 @@ from users.views import (
     task_list_view,
     user_group_view,
     user_list_task,
-    user_processing_view
+    user_processing_view,
+    group_delete_view,
 )
 
 urlpatterns = [
@@ -40,7 +41,6 @@ urlpatterns = [
     path('',home_view,name="home"),
     path('register/',user_creat_view,name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('profile/',user_profile_view,name='profile'),
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     path('administration/',user_admin_view,name='administration'),
@@ -54,5 +54,6 @@ urlpatterns = [
     path('group/projet/task/<int:id>/',task_list_view,name='task_list'),
     path('profile/group/',user_group_view,name='user_group'),
     path('profile/group/task/processing/<int:idT>/',user_processing_view,name='processing'),
-    path('profile/group/task/<int:idP>/',user_list_task,name='user_list_task')
+    path('profile/group/task/<int:idP>/',user_list_task,name='user_list_task'),
+    path('group/delete/<int:idG>/',group_delete_view,name='group_delete'),
 ]

@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+{% include 'admin_navbar.html' %}
+<div class="container-fluid">
   <h1>The list of task in your project </h1>
   {% for task in tasklist %}
     <h2>{{ task }}</h2>
   {% endfor %}
+</div>
 {% endblock content %}

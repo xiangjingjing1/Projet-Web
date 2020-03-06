@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+  {% include 'admin_navbar.html' %}
   <h1>The liste member of your group</h1>
   {% for profil in profilelist %}
     <h2>{{ profil }}</h2>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+  {% include 'admin_navbar.html' %}
   <h1>Here is the list of available group </h1>
   {% for grp in object %}
     <h2>{{ grp.nameGroup }}</h2>
@@ -7,5 +8,6 @@
     <a href="{% url 'projet_creat' grp.id %}">  <button type="button" name="button">Create a project</button></a>
     <a href="{% url 'group_member' grp.id %}"><button type="button" name="button">The list of members</button> </a>
     <a href="{% url 'task_creat' grp.id %}"><button type="button" name="button">Add a task for this group </button></a>
+    <a href="{% url 'group_delete' grp.id %}"><button type="button" name="button">Delete this group </button></a>
   {% endfor %}
 {% endblock content %}

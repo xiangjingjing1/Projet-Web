@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+  {% include 'admin_navbar.html' %}
   <h1>Add new member to your group </h1>
   <form method="post">
   {{ formset.non_form_errors }}

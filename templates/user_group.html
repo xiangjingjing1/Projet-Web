@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% include 'user_navbar.html' %}
   <h1> Welcome back {{ request.user }}</h1>
   <h3> You are a member of following groups </h3>
   {% for grp in grouplist %}
