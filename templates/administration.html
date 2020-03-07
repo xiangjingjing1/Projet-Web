@@ -3,10 +3,14 @@
 {% block content %}
 <div class="container">
         <div class="col-md-offset-4">
+          {% if messages %}
+          <div class="alert alert-primary" role="alert">
+              {% for message in messages %}
+              <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+              {% endfor %}
+          </div>
+          {% endif %}
           <form class='form-login' method="post">
-            {% if message %}
-              <div class="alert alert-warning">{{ message }}</div>
-            {% endif %}
             {% csrf_token %}
               <h2 class="text-center">Log in</h2>
               <div class="form-group">

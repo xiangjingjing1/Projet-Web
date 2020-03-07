@@ -3,6 +3,13 @@
 {% block content %}
 {% include 'navbar.html' %}
   <div class="content-section">
+    {% if messages %}
+    <div class="alert alert-primary" role="alert">
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
     <form class="" method="post">
       {% csrf_token %}
       <fieldset class="form-group">

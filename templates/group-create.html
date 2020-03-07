@@ -3,9 +3,14 @@
 {% block content %}
   {% include 'admin_navbar.html' %}
     <div class="container">
+      {% if messages %}
+      <div class="alert alert-primary" role="alert">
+          {% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+          {% endfor %}
+      </div>
+      {% endif %}
         <div class="row">
-            <div class="col-sm-3 col-12">
-            </div>
             <div class="col-sm-6 col-12">
                 <div>
                     <h3 class="border-bottom color-title mt-5 mb-3">Creat a working group</h3>

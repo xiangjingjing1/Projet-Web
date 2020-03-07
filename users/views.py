@@ -27,8 +27,10 @@ def user_creat_view(request):
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! You are now able to log in')
+            messages.success(request, 'Your account has been created! You are now able to log in')
             return redirect('login')
+        else:
+            messages.error(request,'Please enter the right information')
     else:
         form = UserRegisterForm()
 
@@ -45,6 +47,8 @@ def user_admin_view(request):
         if user is not None and profile.isadmin==True:
             login(request,user)
             return redirect('/adminpanel/')
+        else:
+            messages.error(request,'You are not an administration, Contact your supervisor')
     context={}
 
     return render(request,'administration.html',context)
@@ -65,8 +69,10 @@ def user_profile_view(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, f'Your account has been updated!')
+            messages.success(request, 'Your account has been updated!')
             return redirect('profile')
+        else:
+            messages.error(request, 'Please enter the right information')
     else:
         u_form=UserUpdateForm(instance=request.user)
         p_form=ProfileUpdateForm(instance=request.user.profile)
@@ -90,6 +96,7 @@ def group_creat_view(request):
             group.save()
             user_group=UserGroup(id_group_id=group.id,id_user_id=user1.id)
             user_group.save()
+            messages.success(request, 'Your group has been created!')
             return redirect('/group/')
 
     else:
@@ -211,11 +218,15 @@ def task_list_view(request,id):
 
 
 #### Visualise processing view ####
+@login_required
 def task_prosessing_view(request,id):
     processinglist=[]
     tasklist=Task.objects.filter(id_group_id=id)
+    taskname=[]
     for tsk in tasklist:
         processing=Processing.objects.get(id_user_task_id=tsk.id)
+        name=Task.objects.get(id=tsk.id)
+        taskname.append(name)
         if processing is not None:
             processinglist.append(processing)
     return render(request,'task_processing.html',locals())
@@ -265,6 +276,7 @@ def user_processing_view(request,idT):
             processing.save()
             messages.success(request,f'Information saved !')
             return redirect('/profile/group/')
+            messages.success(request,"You processing has been updated")
         else:
             messages.error(request,"Please fill all the information ")
     else:
@@ -282,6 +294,7 @@ def group_delete_view(request,idG):
         admin=Profile.objects.get(user_id=user)
         if admin.isadmin==True:
             d_group.delete()
+            messages=messages.success(request,"Your ")
             return redirect('/group/')
     context = {
         "object": d_group

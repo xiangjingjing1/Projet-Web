@@ -2,9 +2,17 @@
 {% load crispy_forms_tags %}
 {% block content %}
   {% include 'user_navbar.html' %}
+  {% if messages %}
     <div class="content-section">
+      <div class="alert alert-primary" role="alert">
+          {% for message in messages %}
+          <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+          {% endfor %}
+      </div>
+    </div>
+      {% endif %}
       <div class="media">
-        <legend class="border-bottom mb-4"> Profile information </legend>
+        <h1 class="mb-4"> Profile information </h1>
         <div class="container">
           <h2 class="account-heading">Username : {{ user.username }}</h2>
           <p class="text-secondary">Email: {{ user.email }}</p>
