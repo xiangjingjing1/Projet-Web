@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  {% include 'admin_navbar.html' %}
+  <h1>The processing for your group </h1>
+  {% for prs in processinglist %}
+  <h4>Summary of task</h4>
+    <p> {{ prs.summary }} </p>
+    {% if prs.is_finished==True %}
+    <<h4> This task has been finished</h4>
+    {% else %}
+    <h4> This task is not finished</h4>
+    {% endif %}
+  {% endfor %}
+{% endblock content %}

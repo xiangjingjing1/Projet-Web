@@ -34,6 +34,8 @@ from users.views import (
     user_list_task,
     user_processing_view,
     group_delete_view,
+    task_prosessing_view,
+    member_delete_view
 )
 
 urlpatterns = [
@@ -56,4 +58,6 @@ urlpatterns = [
     path('profile/group/task/processing/<int:idT>/',user_processing_view,name='processing'),
     path('profile/group/task/<int:idP>/',user_list_task,name='user_list_task'),
     path('group/delete/<int:idG>/',group_delete_view,name='group_delete'),
+    path('group/projet/processing/<int:id>/',task_prosessing_view,name='projet_processing'),
+    path('group/member/delete/<int:idG>/<int:idU>/',member_delete_view,name='member_delete')
 ]

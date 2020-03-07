@@ -138,18 +138,20 @@ def group_view(request,id):
 
 
 ####  Member list of a group view  ####
+@login_required
 def group_member_view(request,id):
     profilelist=[]
     name_group=Group.objects.get(id=id)
     memberlist=UserGroup.objects.filter(id_group_id=name_group.id)
     for member in memberlist:
         profil=Profile.objects.get(id=member.id_user_id)
-        profilelist.append(profil.firstname)
+        profilelist.append(profil)
 
     return render(request,'group_member.html',locals())
 
 
 ####  Creat projet view ####
+@login_required
 def projet_creat_view(request,id):
     if request.method=="POST":
         form=ProjetCreationForm(request.POST)
@@ -171,6 +173,7 @@ def projet_creat_view(request,id):
 
 
 #### Creat a task for a projet ####
+@login_required
 def task_creat_view(request,id):
     if request.method=="POST":
         form=TaskCreationForm(request.POST)
@@ -195,14 +198,28 @@ def task_creat_view(request,id):
 
 
 #### Visualise task view ####
+@login_required
 def task_list_view(request,id):
     tasklist=[]
-    task_group=Task.objects.filter(id_group=id)
+    #processinglist=[]
+    task_group=Task.objects.filter(id_group_id=id)
     for tsk in task_group:
-        task=Task.objects.get(id_group=id)
+        task=Task.objects.get(id=tsk.id)
+        #processing=Processing.objects.get(id_user_task_id=tsk.id)
         tasklist.append(task.name_task)
-
     return render(request,'task_list.html',locals())
+
+
+#### Visualise processing view ####
+def task_prosessing_view(request,id):
+    processinglist=[]
+    tasklist=Task.objects.filter(id_group_id=id)
+    for tsk in tasklist:
+        processing=Processing.objects.get(id_user_task_id=tsk.id)
+        if processing is not None:
+            processinglist.append(processing)
+    return render(request,'task_processing.html',locals())
+
 
 
 #### User visualise group view ####
@@ -220,6 +237,7 @@ def user_group_view(request):
 
 
 #### User list of task per group ####
+@login_required
 def user_list_task(request,idP):
     task_list=[]
     current_user=request.user
@@ -256,6 +274,7 @@ def user_processing_view(request,idT):
 
 
 #### Group Delete view ####
+@login_required
 def group_delete_view(request,idG):
     d_group=Group.objects.get(id=idG)
     if request.method == "POST":
@@ -269,5 +288,15 @@ def group_delete_view(request,idG):
     }
     return render(request, "group_delete.html", context)
 
-#### Member_processing_view ####
-#def user_processing_view(request):
+#### Member Delete view ####
+@login_required
+def member_delete_view(request,idG,idU):
+    if request.method == "POST":
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            member=UserGroup.objects.get(id_user_id=idU)
+            member.delete()
+            return redirect('/group/')
+
+    return render(request,"user_delete.html",locals())

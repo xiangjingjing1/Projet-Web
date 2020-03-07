@@ -3,6 +3,7 @@
   {% include 'admin_navbar.html' %}
   <h1>The liste member of your group</h1>
   {% for profil in profilelist %}
-    <h2>{{ profil }}</h2>
+    <h2>{{ profil.firstname }}</h2>
+    <a href="{% url 'member_delete' name_group.id profil.id %}"><button type="button" name="button">Delete this member</button></a>
   {% endfor %}
 {% endblock content %}
