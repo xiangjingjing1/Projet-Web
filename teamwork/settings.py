@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'djangosecure',
     #User
     'users.apps.UsersConfig',
 ]
@@ -125,8 +126,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-
-#SECURE_SSL_REDIRECT=True
+#SECURE_PROXY_SSL_HEADER = (“HTTP_X_FORWARDED_PROTO”, “https”)
+SECURE_SSL_REDIRECT=True
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+SECURE_HSTS_SECONDS=True
+SESSION_COOKIE_SECURE=True
+SESSION_COOKIE_HTTPONLY=True
 
 LOGIN_REDIRECT_URL='profile'
 LOGIN_URL='login'
