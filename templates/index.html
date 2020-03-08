@@ -11,24 +11,24 @@
       </div>
     </div>
       {% endif %}
-      <div class="media">
-        <h1 class="mb-4"> Profile information </h1>
+      <div class="jumbotron">
+        <h2> Profile information</h2>
         <div class="container">
-          <h2 class="account-heading">Username : {{ user.username }}</h2>
-          <p class="text-secondary">Email: {{ user.email }}</p>
-          <a href="{% url 'logout' %}">Log out </a>
+          <h4>Username : {{ user.username }}</h4>
+          <h4>Email: {{ user.email }}</h4>
         </div>
+        <form class="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4"> Update your profil </legend>
+            {{ u_form|crispy }}
+            {{ p_form|crispy }}
+          </fieldset>
+          <div class="form-group">
+            <button type="btn btn-outline-info" name="button" type="submit">Update</button>
+          </div>
+        </form>
       </div>
-      <form class="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset class="form-group">
-          <legend class="border-bottom mb-4"> Update your profil </legend>
-          {{ u_form|crispy }}
-          {{ p_form|crispy }}
-        </fieldset>
-        <div class="form-group">
-          <button type="btn btn-outline-info" name="button" type="submit">Update</button>
-        </div>
-      </form>
+
     </div>
 {% endblock content%}

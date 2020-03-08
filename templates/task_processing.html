@@ -2,6 +2,7 @@
 {% block content %}
   {% include 'admin_navbar.html' %}
   <div class="container">
+    <div class="jumbotron">
     <h1>The processing for your group </h1>
       {% for prs in processinglist %}
         {% for name in taskname %}
@@ -19,4 +20,6 @@
           {% endif %}
       {% endfor %}
   </div>
+  </div>
+
 {% endblock content %}

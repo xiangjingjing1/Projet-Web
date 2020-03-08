@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
   {% include 'admin_navbar.html' %}
-  <h1>Here is the list of available group </h1>
-  {% for grp in object %}
-    <h2>{{ grp.nameGroup }}</h2>
-    <a href="{% url 'group' grp.id  %}">  <button type="button" name="button">Add member</button></a>
-    <a href="{% url 'projet_creat' grp.id %}">  <button type="button" name="button">Create a project</button></a>
-    <a href="{% url 'group_member' grp.id %}"><button type="button" name="button">The list of members</button> </a>
-    <a href="{% url 'task_creat' grp.id %}"><button type="button" name="button">Add a task for this group </button></a>
-    <a href="{% url 'group_delete' grp.id %}"><button type="button" name="button">Delete this group </button></a>
-    <a href="{% url 'projet_processing' grp.id  %}">  <button type="button" name="button">See progress</button></a>
+    <h1>Here is the list of available group </h1>
+    {% for grp in group %}
+      <div class="jumbotron">
+        <h2>{{ grp.nameGroup }}</h2>
+          <div class="btn-group" role="group" >
+            <a class="btn btn-secondary" href="{% url 'group' grp.id  %}">  Add member</a>
+            <a class="btn btn-secondary" href="{% url 'projet_creat' grp.id %}">  Create a project</a>
+            <a class="btn btn-secondary" href="{% url 'group_member' grp.id %}">The list of members</a>
+            <a class="btn btn-secondary" href="{% url 'task_creat' grp.id %}">Add a task for this group </a>
+            <a class="btn btn-secondary" href="{% url 'group_delete' grp.id %}">Delete this group </a>
+            <a class="btn btn-secondary" href="{% url 'projet_processing' grp.id  %}">  See progress</a>
+            <a class="btn btn-secondary" href="{% url 'task_list' grp.id  %}"> Task list</a>
+          </div>
+      </div>
+
+
   {% endfor %}
 {% endblock content %}

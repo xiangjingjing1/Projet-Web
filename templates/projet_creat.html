@@ -10,22 +10,17 @@
           {% endfor %}
       </div>
       {% endif %}
-        <div class="row">
-            <div class="col-sm-6 col-12">
-                <div>
-                    <h3 class="border-bottom color-title mt-5 mb-3">Creat a projet for your group</h3>
-                </div>
-                <form method="post">
-                {{ formset.non_form_errors }}
-                {% csrf_token %}
-                {{ form|crispy }}
-                <div id="button_connexion">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                </form>
-            </div>
-            <div class="col-sm-3 col-12">
-            </div>
+      <div class="jumbotron">
+        <h2>Creat a projet for your group</h2>
+        <form method="post">
+        {{ formset.non_form_errors }}
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div id="button_connexion">
+        <button type="submit" class="btn btn-primary">Submit</button>
         </div>
+        </form>
+      </div>
+
     </div>
 {% endblock %}

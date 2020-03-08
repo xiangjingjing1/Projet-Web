@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
   {% include 'admin_navbar.html' %}
+  <div class="jumbotron">
   <h1>The liste member of your group</h1>
   {% for profil in profilelist %}
     <h2>{{ profil.firstname }}</h2>
-    <a href="{% url 'member_delete' name_group.id profil.id %}"><button type="button" name="button">Delete this member</button></a>
+    <a class="btn btn-info" href="{% url 'member_delete' name_group.id profil.id %}">Delete this member</a>
   {% endfor %}
+  </div>
 {% endblock content %}

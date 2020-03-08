@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'admin_navbar.html' %}
-<div class="container-fluid">
+<div class="container">
+  <div class="jumbotron">
   <h1>The list of task in your project </h1>
-  {% for task in tasklist %}
-    <h2>{{ task }}</h2>
-  {% endfor %}
 
-  
+  {% for task in tasklist %}
+    <h2> Task name : {{ task.name_task }}</h2>
+    <h4> Starting time : {{ task.task_start_date }}</h4>
+    <h4> Ending time : {{ task.task_end_date }}</h4>
+  {% endfor %}
+  </div>
 </div>
 {% endblock content %}

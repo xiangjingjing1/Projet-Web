@@ -10,13 +10,10 @@
           {% endfor %}
       </div>
       {% endif %}
-        <div class="row">
-            <div class="col-sm-3 col-12">
-            </div>
-            <div class="col-sm-6 col-12">
-                <div>
-                    <h3 class="border-bottom color-title mt-5 mb-3">Edit processing for your projet</h3>
-                </div>
+      <div class="jumbotron">
+
+        <h3>Edit processing for your projet</h3>
+
                 <form method="post">
                 {{ formset.non_form_errors }}
                 {% csrf_token %}
@@ -25,9 +22,8 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
                 </form>
-            </div>
-            <div class="col-sm-3 col-12">
-            </div>
+          
         </div>
+    </div>
     </div>
 {% endblock %}

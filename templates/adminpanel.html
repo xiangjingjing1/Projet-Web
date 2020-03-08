@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
   {% include 'admin_navbar.html' %}
-  <h1>This is an admin page</h1>
+  <h1>Welcome back</h1>
+  <div class="jumbotron">
+    <h2> Start to manage your projet !</h2>
+    <hr class="my-4">
+    <h4> To be started, create your group </h4>
+    <a class="btn btn-primary btn-lg" href="{% url 'group_create' %}" role="button">Create your group</a>
+    <hr class="my-4">
+    <h4> To see your group and manage your group </h4>
+    <a class="btn btn-primary btn-lg" href="{% url 'group_list' %}" role="button">Group list</a>
+
+
+  </div>
 {% endblock %}

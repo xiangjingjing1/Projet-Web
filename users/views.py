@@ -56,6 +56,11 @@ def user_admin_view(request):
 
 #### Admin homepage ####
 def user_admin_panel(request):
+    if request.method=="POST":
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==False:
+            return redirect("/login/")
     return render(request,'adminpanel.html')
 
 
@@ -90,14 +95,19 @@ def user_profile_view(request):
 def group_creat_view(request):
     if request.method=="POST":
         form=GroupCreationForm(request.POST)
-        if form.is_valid():
-            user1=Profile.objects.get(id=request.user.id)
-            group=Group(nameGroup=form.cleaned_data.get('nameGroup'),idProfile_id=user1.id)
-            group.save()
-            user_group=UserGroup(id_group_id=group.id,id_user_id=user1.id)
-            user_group.save()
-            messages.success(request, 'Your group has been created!')
-            return redirect('/group/')
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            if form.is_valid():
+                user1=Profile.objects.get(id=request.user.id)
+                group=Group(nameGroup=form.cleaned_data.get('nameGroup'),idProfile_id=user1.id)
+                group.save()
+                user_group=UserGroup(id_group_id=group.id,id_user_id=user1.id)
+                user_group.save()
+                messages.success(request, 'Your group has been created!')
+                return redirect('/group/')
+        else:
+            return redirect("/login/")
 
     else:
         profile=Profile.objects.get(user=request.user.id)
@@ -109,34 +119,42 @@ def group_creat_view(request):
 #### Available group list
 @login_required
 def group_list_view(request):
-    group=Group.objects.all()
-    context={
-        "object":group
-    }
+    user=request.user.id
+    admin=Profile.objects.get(user_id=user)
+    if admin.isadmin==True:
+        group=Group.objects.all()
+    else:
+        return redirect("/login/")
 
-    return render(request,'group_list.html',context)
+    return render(request,'group_list.html',locals())
 
 
 #### Group page for adding new member ####
 @login_required
-def group_view(request,id):
+def add_member_view(request,id):
     obj=get_object_or_404(Group,id=id)
     context={
         "object":obj
     }
     if request.method=="POST":
-        form=GroupAddUserForm(request.POST)
-        if form.is_valid():
-            username=form.cleaned_data.get('nameUser')
-            user=User.objects.get(username=username)
-            profil=Profile.objects.get(user_id=user.id)
-            if user is not None:
-                usergroup=UserGroup(id_group_id=id,id_user_id=profil.id)
-                usergroup.save()
-                messages.success(request, f'New member has been add')
-                return redirect('/group/')
-            else:
-                messages.error(request,"User doesn't exist ")
+        user1=request.user.id
+        admin=Profile.objects.get(user_id=user1)
+        if admin.isadmin==True:
+            form=GroupAddUserForm(request.POST)
+            if form.is_valid():
+                username=form.cleaned_data.get('nameUser')
+                user=User.objects.get(username=username)
+                profil=Profile.objects.get(user_id=user.id)
+                if user is not None:
+                    usergroup=UserGroup(id_group_id=id,id_user_id=profil.id)
+                    usergroup.save()
+                    messages.success(request, f'New member has been add')
+                    return redirect('/group/')
+                else:
+                    messages.error(request,"User doesn't exist ")
+                    return redirect("/group/")
+        else:
+            return redirect("/login/")
     #group=Group.objects.all().values('nameGroup')
     else:
         form=GroupAddUserForm()
@@ -147,12 +165,17 @@ def group_view(request,id):
 ####  Member list of a group view  ####
 @login_required
 def group_member_view(request,id):
-    profilelist=[]
-    name_group=Group.objects.get(id=id)
-    memberlist=UserGroup.objects.filter(id_group_id=name_group.id)
-    for member in memberlist:
-        profil=Profile.objects.get(id=member.id_user_id)
-        profilelist.append(profil)
+    user=request.user.id
+    admin=Profile.objects.get(user_id=user)
+    if admin.isadmin==True:
+        profilelist=[]
+        name_group=Group.objects.get(id=id)
+        memberlist=UserGroup.objects.filter(id_group_id=name_group.id)
+        for member in memberlist:
+            profil=Profile.objects.get(id=member.id_user_id)
+            profilelist.append(profil)
+    else:
+        return redirect("/login/")
 
     return render(request,'group_member.html',locals())
 
@@ -161,18 +184,23 @@ def group_member_view(request,id):
 @login_required
 def projet_creat_view(request,id):
     if request.method=="POST":
-        form=ProjetCreationForm(request.POST)
-        if form.is_valid():
-            stardate=form.cleaned_data.get('starting_date')
-            enddate=form.cleaned_data.get('ending_date')
-            dscp=form.cleaned_data.get('description')
-            namep=form.cleaned_data.get('name_projet')
-            projet=Projet(group_projet_id=id,starting_date=stardate,ending_date=enddate,name_projet=namep)
-            projet.save()
-            messages.success(request,f'Projet created !')
-            return redirect('/group/')
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            form=ProjetCreationForm(request.POST)
+            if form.is_valid():
+                stardate=form.cleaned_data.get('starting_date')
+                enddate=form.cleaned_data.get('ending_date')
+                dscp=form.cleaned_data.get('description')
+                namep=form.cleaned_data.get('name_projet')
+                projet=Projet(group_projet_id=id,starting_date=stardate,ending_date=enddate,name_projet=namep)
+                projet.save()
+                messages.success(request,f'Projet created !')
+                return redirect('/group/')
+            else:
+                messages.error(request,"Please fill all the information ")
         else:
-            messages.error(request,"Please fill all the information ")
+            return redirect("/login/")
     else:
         form=ProjetCreationForm()
 
@@ -183,21 +211,26 @@ def projet_creat_view(request,id):
 @login_required
 def task_creat_view(request,id):
     if request.method=="POST":
-        form=TaskCreationForm(request.POST)
-        if form.is_valid():
-            stardate=form.cleaned_data.get('task_starting_date')
-            enddate=form.cleaned_data.get('task_ending_date')
-            dscp=form.cleaned_data.get('description_task')
-            nametask=form.cleaned_data.get('name_task')
-            nameuser=form.cleaned_data.get('name_user')
-            user_profil=User.objects.get(username=nameuser)
-            id_profil=Profile.objects.get(user_id=user_profil.id)
-            task=Task(name_task=nametask,discription_task=dscp,task_start_date=stardate,task_end_date=enddate,id_employee_id=id_profil.id,id_group_id=id)
-            task.save()
-            messages.success(request,f'Task created !')
-            return redirect('/group/')
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            form=TaskCreationForm(request.POST)
+            if form.is_valid():
+                stardate=form.cleaned_data.get('task_starting_date')
+                enddate=form.cleaned_data.get('task_ending_date')
+                dscp=form.cleaned_data.get('description_task')
+                nametask=form.cleaned_data.get('name_task')
+                nameuser=form.cleaned_data.get('name_user')
+                user_profil=User.objects.get(username=nameuser)
+                id_profil=Profile.objects.get(user_id=user_profil.id)
+                task=Task(name_task=nametask,discription_task=dscp,task_start_date=stardate,task_end_date=enddate,id_employee_id=id_profil.id,id_group_id=id)
+                task.save()
+                messages.success(request,f'Task created !')
+                return redirect('/group/')
+            else:
+                messages.error(request,"Please fill all the information ")
         else:
-            messages.error(request,"Please fill all the information ")
+            return redirect("/login/")
     else:
         form=TaskCreationForm()
 
@@ -207,28 +240,40 @@ def task_creat_view(request,id):
 #### Visualise task view ####
 @login_required
 def task_list_view(request,id):
-    tasklist=[]
+    if request.method == "POST":
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            tasklist=[]
     #processinglist=[]
-    task_group=Task.objects.filter(id_group_id=id)
-    for tsk in task_group:
-        task=Task.objects.get(id=tsk.id)
-        #processing=Processing.objects.get(id_user_task_id=tsk.id)
-        tasklist.append(task.name_task)
+            task_group=Task.objects.filter(id_group_id=id)
+            for tsk in task_group:
+                task=Task.objects.get(id=tsk.id)
+                #processing=Processing.objects.get(id_user_task_id=tsk.id)
+                tasklist.append(task)
+        else:
+            return redirect("/login/")
     return render(request,'task_list.html',locals())
 
 
 #### Visualise processing view ####
 @login_required
 def task_prosessing_view(request,id):
-    processinglist=[]
-    tasklist=Task.objects.filter(id_group_id=id)
-    taskname=[]
-    for tsk in tasklist:
-        processing=Processing.objects.get(id_user_task_id=tsk.id)
-        name=Task.objects.get(id=tsk.id)
-        taskname.append(name)
-        if processing is not None:
-            processinglist.append(processing)
+    if request.method == "POST":
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            processinglist=[]
+            tasklist=Task.objects.filter(id_group_id=id)
+            taskname=[]
+            for tsk in tasklist:
+                processing=Processing.objects.get(id_user_task_id=tsk.id)
+                name=Task.objects.get(id=tsk.id)
+                taskname.append(name)
+                if processing is not None:
+                    processinglist.append(processing)
+        else:
+            return redirect("/login/")
     return render(request,'task_processing.html',locals())
 
 
@@ -266,19 +311,24 @@ def user_list_task(request,idP):
 @login_required
 def user_processing_view(request,idT):
     if request.method=="POST":
-        form=TaskProcessingForm(request.POST)
-        if form.is_valid():
-            current_user=request.user
-            user_profile=Profile.objects.get(user_id=current_user.id)
-            finished=form.cleaned_data.get('is_finished')
-            summary=form.cleaned_data.get('summary')
-            processing=Processing(is_finished=finished,summary=summary,id_user_id=user_profile.id,id_user_task_id=idT)
-            processing.save()
-            messages.success(request,f'Information saved !')
-            return redirect('/profile/group/')
-            messages.success(request,"You processing has been updated")
+        user=request.user.id
+        admin=Profile.objects.get(user_id=user)
+        if admin.isadmin==True:
+            form=TaskProcessingForm(request.POST)
+            if form.is_valid():
+                current_user=request.user
+                user_profile=Profile.objects.get(user_id=current_user.id)
+                finished=form.cleaned_data.get('is_finished')
+                summary=form.cleaned_data.get('summary')
+                processing=Processing(is_finished=finished,summary=summary,id_user_id=user_profile.id,id_user_task_id=idT)
+                processing.save()
+                messages.success(request,f'Information saved !')
+                return redirect('/profile/group/')
+                messages.success(request,"You processing has been updated")
+            else:
+                messages.error(request,"Please fill all the information ")
         else:
-            messages.error(request,"Please fill all the information ")
+            return redirect("/login/")
     else:
         form=TaskProcessingForm(request.POST)
 
@@ -289,13 +339,14 @@ def user_processing_view(request,idT):
 @login_required
 def group_delete_view(request,idG):
     d_group=Group.objects.get(id=idG)
-    if request.method == "POST":
-        user=request.user.id
-        admin=Profile.objects.get(user_id=user)
-        if admin.isadmin==True:
-            d_group.delete()
-            messages=messages.success(request,"Your ")
-            return redirect('/group/')
+    user=request.user.id
+    admin=Profile.objects.get(user_id=user)
+    if admin.isadmin==True:
+        d_group.delete()
+        messages=messages.success(request,"Your group has been deleted")
+        return redirect('/group/')
+    else:
+        return redirect("login")
     context = {
         "object": d_group
     }
@@ -311,5 +362,18 @@ def member_delete_view(request,idG,idU):
             member=UserGroup.objects.get(id_user_id=idU)
             member.delete()
             return redirect('/group/')
+        else:
+            return redirect("login")
 
     return render(request,"user_delete.html",locals())
+
+@login_required
+def user_project_view(request):
+    projectlist=[]
+    current_user=request.user
+    profil=Profile.objects.get(user_id=current_user.id)
+    user_group=UserGroup.objects.filter(id_user_id=profil.id)
+    for grp in user_group:
+        project=Projet.objects.get(group_projet_id=grp.id_group_id)
+        projectlist.append(project)
+    return render(request,'user_project.html',locals())

@@ -1,10 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'user_navbar.html' %}
-  <h1> Welcome back {{ request.user }}</h1>
-  <h3> You are a member of following groups </h3>
-  {% for grp in grouplist %}
-    <h2>{{ grp.nameGroup }}</h2>
-    <a href="{% url 'user_list_task' grp.id  %}">  <button type="button" name="button">See the task belongs to you</button></a>
-  {% endfor %}
+ <div class="container">
+   <div class="jumbotron">
+   <h1> Welcome back {{ request.user }}</h1>
+   <h3> You are a member of following groups </h3>
+   {% for grp in grouplist %}
+     <h2>{{ grp.nameGroup }}</h2>
+     <a class= "btn btn-info" href="{% url 'user_list_task' grp.id  %}"> See the task belongs to you</a>
+   {% endfor %}
+   {% for pro in projectlist %}
+   <h3> {{ pro.name_projet }}</h3>
+   {% endfor %}
+   </div>
+ </div>
 {% endblock content %}

@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'user_navbar.html' %}
+<div class="container">
+  <div class="jumbotron">
   <h1>The list of task belongs to you in the projet </h1>
   {% for task in task_list %}
-    <h4> {{ task.name_task }} </h4>
-    <a href="{% url 'processing' task.id  %}">  <button type="button" name="button">Upload information</button></a>
+    <h4>Task: {{ task.name_task }} </h4>
+    <h3> Starting time : {{ task.task_start_date }}</h3>
+    <h4> Ending time: {{ task.task_end_date }}</h4>
+    <a class="btn btn-info" href="{% url 'processing' task.id  %}"> Upload information</a>
   {% endfor %}
+  </div>
+</div>
 {% endblock content %}

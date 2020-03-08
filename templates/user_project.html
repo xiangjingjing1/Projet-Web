@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% include 'user_navbar.html' %}
+ <div class="container">
+   <div class="jumbotron">
+   <h1> Welcome back {{ request.user }}</h1>
+   <h3> You are a member of following project </h3>
+   {% for pro in projectlist %}
+     <h2>Name: {{ pro.name_projet }}</h2>
+     <p> Description : {{ pro.discription }}<p>
+      <p> Starting Date : {{ pro.starting_date}}</p>
+      <p> Ending Date : {{ pro.ending_date}}</p>
+   {% endfor %}
+   </div>
+ </div>
+{% endblock content %}
